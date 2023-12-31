@@ -17,3 +17,7 @@ def plot_fn_2d(f, x_lo=-20, x_hi=20, y_lo=-20, y_hi=20, linspace_n=100):
 
   plt.contourf(xs, ys, zs, levels=30)
   plt.colorbar()
+
+def plot_segment(p, q, color='red'):
+  endpoints = np.array([p, q])
+  plt.plot(endpoints[:, 0], endpoints[:, 1], color=color)

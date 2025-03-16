@@ -69,7 +69,6 @@ for epoch in range(epochs):
         model.eval()
         with torch.inference_mode():
             test_pred = model(X_test)
-            y_pred = model(X_test)
             plt.scatter(X_test, test_pred, color='gray')
 
 with torch.inference_mode():

@@ -1,0 +1,49 @@
+---
+title: "Image Kernel"
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+```{python}
+import numpy as np
+from matplotlib import pyplot
+from scipy import ndimage
+from skimage import io, color
+```
+
+```{python}
+img_raw = io.imread('./data/paris.jpeg')
+img = color.rgb2gray(img_raw)
+```
+
+```{python}
+kernel1 = np.array([
+    [-1, -1, -1],
+    [0, 0, 0],
+    [1, 1, 1]
+])
+
+kernel2 = np.array([
+    [-1, 0, 1],
+    [-1, 0, 1],
+    [-1, 0, 1]
+])
+
+kernel3 = np.array([
+    [1, 0, 0, 0, 0],
+    [0, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0],
+    [0, 0, 0, -1, 0],
+    [0, 0, 0, 0, -1]
+])
+```
+
+```{python}
+fig, ax = pyplot.subplots(2, 2, figsize=(15, 20))
+ax[0][0].imshow(img, cmap='gray')
+ax[0][1].imshow(ndimage.convolve(img, kernel1), cmap='gray')
+ax[1][0].imshow(ndimage.convolve(img, kernel2), cmap='gray')
+ax[1][1].imshow(ndimage.convolve(img, kernel3), cmap='gray')
+```

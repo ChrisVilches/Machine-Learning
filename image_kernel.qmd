@@ -57,4 +57,5 @@ ax3.set_title('Convolution with Kernel 2')
 fig4, ax4 = pyplot.subplots(figsize=(7, 7))
 ax4.imshow(ndimage.convolve(img, kernel3), cmap='gray')
 ax4.set_title('Convolution with Kernel 3')
+pyplot.show()
 ```

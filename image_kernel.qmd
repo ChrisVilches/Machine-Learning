@@ -16,6 +16,7 @@ from skimage import io, color
 ```{python}
 img_raw = io.imread('./data/paris.jpeg')
 img = color.rgb2gray(img_raw)
+img.shape
 ```
 
 ```{python}

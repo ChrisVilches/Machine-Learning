@@ -42,9 +42,19 @@ kernel3 = np.array([
 ```
 
 ```{python}
-fig, ax = pyplot.subplots(2, 2, figsize=(15, 20))
-ax[0][0].imshow(img, cmap='gray')
-ax[0][1].imshow(ndimage.convolve(img, kernel1), cmap='gray')
-ax[1][0].imshow(ndimage.convolve(img, kernel2), cmap='gray')
-ax[1][1].imshow(ndimage.convolve(img, kernel3), cmap='gray')
+fig1, ax1 = pyplot.subplots(figsize=(7, 7))
+ax1.imshow(img, cmap='gray')
+ax1.set_title('Original Image')
+
+fig2, ax2 = pyplot.subplots(figsize=(7, 7))
+ax2.imshow(ndimage.convolve(img, kernel1), cmap='gray')
+ax2.set_title('Convolution with Kernel 1')
+
+fig3, ax3 = pyplot.subplots(figsize=(7, 7))
+ax3.imshow(ndimage.convolve(img, kernel2), cmap='gray')
+ax3.set_title('Convolution with Kernel 2')
+
+fig4, ax4 = pyplot.subplots(figsize=(7, 7))
+ax4.imshow(ndimage.convolve(img, kernel3), cmap='gray')
+ax4.set_title('Convolution with Kernel 3')
 ```

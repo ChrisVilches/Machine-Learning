@@ -1,0 +1,77 @@
+---
+title: "Transformer Sentence Embedding"
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+```{python}
+from transformers import AutoModel, AutoTokenizer, pipeline
+import torch
+```
+
+```{python}
+model_name = 'sentence-transformers/all-MiniLM-L6-v2'
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModel.from_pretrained(model_name)
+
+text = "today I solved some excellent algorithmic problems"
+```
+
+## List All Tokens
+
+```{python}
+encoded = tokenizer(text, return_tensors='pt', padding=True, truncation=True)
+
+tokens = encoded.input_ids.tolist()[0]
+
+for i, token_id in enumerate(tokens):
+    decoded_token = tokenizer.decode(token_id)
+    print(f"Token {i + 1}: {decoded_token}")
+```
+
+## Token IDs
+
+```{python}
+print(encoded['input_ids'])
+print(encoded['attention_mask'])
+```
+
+## Executing the Model
+
+```{python}
+output = model(**encoded)
+print(output.last_hidden_state.shape)
+print(output.last_hidden_state)
+```
+
+## Mean Pooling (Manually)
+
+Since the attention mask consists entirely of `1`s (no padding tokens),
+we can safely compute the simple mean over all token embeddings.
+If the attention mask contains `0`s (indicating padding),
+a weighted mean that accounts for valid tokens is required instead.
+
+```{python}
+assert torch.all(encoded['attention_mask'] == 1)
+```
+
+```{python}
+manual_pooling = output.last_hidden_state.mean(dim=0)
+print(manual_pooling)
+```
+
+## Calculate Pooling Using Library
+
+```{python}
+extractor = pipeline("feature-extraction", model=model_name)
+pooling = torch.tensor(extractor(text))
+print(pooling)
+```
+
+## Compare Both Values
+
+```{python}
+torch.allclose(manual_pooling, pooling, rtol=1e-5, atol=1e-8)
+```

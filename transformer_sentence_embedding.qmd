@@ -9,6 +9,7 @@ jupyter: python3
 ```{python}
 from transformers import AutoModel, AutoTokenizer
 import torch
+torch.set_printoptions(sci_mode=False)
 ```
 
 ```{python}

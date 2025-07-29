@@ -46,7 +46,7 @@ print(initial_embeddings.shape)
 print(initial_embeddings)
 ```
 
-## Executing the Model
+## Processing Embeddings with the Transformer
 
 ```{python}
 output = model(**encoded)
@@ -66,8 +66,8 @@ assert torch.all(encoded['attention_mask'] == 1)
 ```
 
 ```{python}
-manual_pooling = output.last_hidden_state.mean(dim=1)
-print(manual_pooling.shape)
-print(manual_pooling)
+pooling = output.last_hidden_state.mean(dim=1)
+print(pooling)
+print(pooling)
 ```
 

@@ -68,6 +68,5 @@ assert torch.all(encoded['attention_mask'] == 1)
 ```{python}
 pooling = output.last_hidden_state.mean(dim=1)
 print(pooling)
-print(pooling)
 ```
 

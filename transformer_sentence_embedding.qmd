@@ -9,7 +9,7 @@ jupyter: python3
 ```{python}
 from transformers import AutoModel, AutoTokenizer
 import torch
-torch.set_printoptions(sci_mode=False, edgeitems=10)
+torch.set_printoptions(sci_mode=False, edgeitems=5)
 ```
 
 ```{python}
@@ -68,6 +68,7 @@ assert torch.all(encoded['attention_mask'] == 1)
 
 ```{python}
 pooling = output.last_hidden_state.mean(dim=1)
+print(pooling.shape)
 print(pooling)
 ```
 

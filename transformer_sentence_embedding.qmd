@@ -7,7 +7,7 @@ jupyter: python3
 ---
 
 ```{python}
-from transformers import AutoModel, AutoTokenizer, pipeline
+from transformers import AutoModel, AutoTokenizer
 import torch
 ```
 
@@ -38,6 +38,14 @@ print(encoded['input_ids'])
 print(encoded['attention_mask'])
 ```
 
+## Initial Token Embeddings (Pre-Transformer)
+
+```{python}
+initial_embeddings = model.embeddings(encoded.input_ids)
+print(initial_embeddings.shape)
+print(initial_embeddings)
+```
+
 ## Executing the Model
 
 ```{python}
@@ -46,7 +54,7 @@ print(output.last_hidden_state.shape)
 print(output.last_hidden_state)
 ```
 
-## Mean Pooling (Manually)
+## Mean Pooling
 
 Since the attention mask consists entirely of `1`s (no padding tokens),
 we can safely compute the simple mean over all token embeddings.
@@ -58,20 +66,8 @@ assert torch.all(encoded['attention_mask'] == 1)
 ```
 
 ```{python}
-manual_pooling = output.last_hidden_state.mean(dim=0)
+manual_pooling = output.last_hidden_state.mean(dim=1)
+print(manual_pooling.shape)
 print(manual_pooling)
 ```
 
-## Calculate Pooling Using Library
-
-```{python}
-extractor = pipeline("feature-extraction", model=model_name)
-pooling = torch.tensor(extractor(text))
-print(pooling)
-```
-
-## Compare Both Values
-
-```{python}
-torch.allclose(manual_pooling, pooling, rtol=1e-5, atol=1e-8)
-```

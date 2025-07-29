@@ -10,6 +10,7 @@ jupyter: python3
 from transformers import AutoModel, AutoTokenizer
 import torch
 torch.set_printoptions(sci_mode=False)
+torch.set_printoptions(threshold=15)
 ```
 
 ```{python}

@@ -1,0 +1,34 @@
+---
+title: "Positional Encoding"
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+```{python}
+import numpy as np
+from matplotlib import pyplot
+```
+
+```{python}
+d_model = 100
+
+
+def pe(pos, i, d_model=d_model):
+    """Positional encoding: pos is the position and i is the dimension."""
+    angle_rates = 1 / np.power(10_000, (2 * (i // 2)) / np.float32(d_model))
+    return np.sin(pos * angle_rates) if i % 2 == 0 else np.cos(pos * angle_rates)
+
+
+results = np.fromfunction(np.vectorize(pe), (80, d_model), dtype=int)
+print(results.shape)
+```
+
+```{python}
+fig, ax = pyplot.subplots(figsize=(7, 7))
+ax.imshow(results, cmap='viridis')
+ax.set_xlabel('Dimension')
+ax.set_ylabel('Position')
+```
+

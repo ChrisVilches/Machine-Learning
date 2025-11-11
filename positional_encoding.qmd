@@ -30,5 +30,6 @@ fig, ax = pyplot.subplots(figsize=(7, 7))
 ax.imshow(results, cmap='viridis')
 ax.set_xlabel('Dimension')
 ax.set_ylabel('Position')
+pyplot.show()
 ```
 

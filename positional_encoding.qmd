@@ -6,6 +6,13 @@ format:
 jupyter: python3
 ---
 
+# Positional Encoding Visualization
+
+This program calculates and visualizes positional encodings, which are used in
+transformer models to incorporate positional information into input embeddings.
+The encodings are computed for a range of positions and dimensions, and the
+results are displayed as a heatmap.
+
 ```{python}
 import numpy as np
 from matplotlib import pyplot

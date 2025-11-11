@@ -21,7 +21,7 @@ def pe(pos, i, d_model=d_model):
     return np.sin(pos * angle_rates) if i % 2 == 0 else np.cos(pos * angle_rates)
 
 
-results = np.fromfunction(np.vectorize(pe), (80, d_model), dtype=int)
+results = np.fromfunction(np.vectorize(pe), (80, d_model))
 print(results.shape)
 ```
 

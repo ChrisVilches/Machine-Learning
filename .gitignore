@@ -1,3 +1,6 @@
 .ipynb_checkpoints
 util/__pycache__/
 .garbage
+
+data/ignored/*
+!data/ignored/.gitkeep

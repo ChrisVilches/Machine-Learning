@@ -23,6 +23,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader, TensorDataset
 from collections import Counter
+from typing import Sized, cast
 torch.__version__
 ```
 
@@ -90,9 +91,6 @@ class ColorPredictionModel(nn.Module):
     def __init__(self, input_size, hidden_size, num_classes):
         super(ColorPredictionModel, self).__init__()
 
-        # TODO: Maybe make this model more robust.
-        # And if it improves, decrease the amount of epochs.
-
         self.layer1 = nn.Linear(input_size, hidden_size)
         self.layer2 = nn.Linear(hidden_size, hidden_size)
         self.layer3 = nn.Linear(hidden_size, hidden_size)
@@ -112,8 +110,6 @@ class ColorPredictionModel(nn.Module):
 def split_data(X, y_labels):
     indices = torch.randperm(X.size(0))
     train_size = int(0.8 * X.size(0))
-    test_size = X.size(0) - train_size
-    # TODO: Maybe this is wrong, since the variable is unused.
 
     train_indices = indices[:train_size]
     test_indices = indices[train_size:]
@@ -128,10 +124,10 @@ X_train, X_test, y_train, y_test = split_data(X, y_labels)
 train_dataset = TensorDataset(X_train, y_train)
 test_dataset = TensorDataset(X_test, y_test)
 
-train_loader = DataLoader(train_dataset, batch_size=2, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=2, shuffle=False)
+train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
 
-model = ColorPredictionModel(input_size=2, hidden_size=64, num_classes=3)
+model = ColorPredictionModel(input_size=2, hidden_size=40, num_classes=3)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
@@ -146,11 +142,11 @@ for epoch in range(epochs):
         loss.backward()
         optimizer.step()
 
-        running_loss += loss.item()
+        running_loss += loss.item() * batch_X.size(0)
 
     if (epoch + 1) % 10 == 0:
-        print(
-            f"Epoch [{epoch+1}/{epochs}], Loss: {running_loss/len(train_loader):.4f}")
+        loss = running_loss / len(cast(Sized, train_loader.dataset))
+        print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss:.4f}")
 ```
 
 ## Model Testing and Visualization

@@ -145,8 +145,8 @@ for epoch in range(epochs):
         running_loss += loss.item() * batch_X.size(0)
 
     if (epoch + 1) % 10 == 0:
-        loss = running_loss / len(cast(Sized, train_loader.dataset))
-        print(f"Epoch [{epoch+1}/{epochs}], Loss: {loss:.4f}")
+        epoch_loss = running_loss / len(cast(Sized, train_loader.dataset))
+        print(f"Epoch [{epoch+1}/{epochs}], Loss: {epoch_loss:.4f}")
 ```
 
 ## Model Testing and Visualization

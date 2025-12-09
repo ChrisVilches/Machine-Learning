@@ -33,6 +33,14 @@ print(img_tensor.shape)
 
 Apply max pooling and average pooling to the image tensor to reduce its dimensions.
 
+Pooling operations serve two main purposes in convolutional neural networks:
+
+1. **Dimensionality reduction:** By summarizing local regions, pooling reduces spatial dimensions and computational complexity
+2. **Translation invariance:** Pooling makes features more robust to small translations in the input
+
+- **Max pooling** selects the maximum value in each local region, preserving the strongest features
+- **Average pooling** computes the mean value in each region, providing a smoother representation
+
 ```{python}
 max_pool = nn.MaxPool2d(kernel_size=4, stride=4)
 avg_pool = nn.AvgPool2d(kernel_size=4, stride=4)

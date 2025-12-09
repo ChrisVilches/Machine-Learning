@@ -1,0 +1,64 @@
+---
+title: "Image Pooling"
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+Import necessary libraries for image processing and neural network operations.
+
+```{python}
+import torch
+import torch.nn as nn
+import matplotlib.pyplot as plt
+from skimage import io, color
+```
+
+Load an image and convert it to grayscale.
+
+```{python}
+img_raw = io.imread('./data/dotonbori.jpg')
+img = color.rgb2gray(img_raw)
+print(img.shape)
+```
+
+Convert the grayscale image to a tensor and add batch and channel dimensions.
+
+```{python}
+img_tensor = torch.tensor(img, dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+
+print(img_tensor.shape)
+```
+
+Apply max pooling and average pooling to the image tensor to reduce its dimensions.
+
+```{python}
+max_pool = nn.MaxPool2d(kernel_size=4, stride=4)
+avg_pool = nn.AvgPool2d(kernel_size=4, stride=4)
+img_max_pooled = max_pool(img_tensor).squeeze(0).squeeze(0)
+img_avg_pooled = avg_pool(img_tensor).squeeze(0).squeeze(0)
+print(img_max_pooled.shape)
+print(img_avg_pooled.shape)
+```
+
+Plot the original and pooled images for comparison.
+
+```{python}
+fig1, ax1 = plt.subplots(figsize=(7, 7))
+ax1.imshow(img, cmap='gray')
+ax1.set_title('Original Image')
+plt.axis("off")
+
+fig2, ax2 = plt.subplots(figsize=(7, 7))
+ax2.imshow(img_avg_pooled.numpy(), cmap='gray')
+ax2.set_title('Average Pooled Image')
+plt.axis("off")
+
+fig3, ax3 = plt.subplots(figsize=(7, 7))
+ax3.imshow(img_max_pooled.numpy(), cmap='gray')
+ax3.set_title('Max Pooled Image')
+plt.axis("off")
+
+plt.show()
+```

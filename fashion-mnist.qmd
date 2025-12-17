@@ -15,8 +15,7 @@ from typing import Sized, cast
 
 transform = transforms.Compose([
     transforms.ToTensor(),
-    # TODO: Not sure if this normalization makes any sense.
-    transforms.Normalize((0.5,), (0.5,))
+    transforms.Normalize((0.286,), (0.353,))  # Fashion-MNIST mean and std
 ])
 
 train_data = datasets.FashionMNIST(
@@ -40,16 +39,17 @@ test_loader = torch.utils.data.DataLoader(test_data, batch_size=64)
 
 ```{python}
 import matplotlib.pyplot as plt
+fig, axes = plt.subplots(1, 3, figsize=(10, 3))
 for i in range(3):
     img, label = train_data[i]
-    plt.imshow(img.squeeze(), cmap="gray")
-    plt.title(f"Label: {label}")
+    axes[i].imshow(img.squeeze(), cmap="gray")
+    axes[i].set_title(f"Label: {label}")
+    axes[i].axis("off")
+plt.tight_layout()
 ```
 
 ```{python}
 import torch.nn as nn
-
-# TODO: Study, audit, and analyze what I (well, ChatGPT) did here.
 
 
 class FashionCNN(nn.Module):
@@ -57,20 +57,28 @@ class FashionCNN(nn.Module):
         super().__init__()
         self.features = nn.Sequential(
             nn.Conv2d(1, 32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.MaxPool2d(2),
+            nn.Dropout2d(0.25),
             nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
             nn.ReLU(),
-            nn.MaxPool2d(2)
+            nn.MaxPool2d(2),
+            nn.Dropout2d(0.25)
         )
 
         self.classifier = nn.Sequential(
             nn.Flatten(),
-            nn.Linear(128 * 7 * 7, 128),
+            nn.Linear(128 * 7 * 7, 256),
             nn.ReLU(),
-            nn.Dropout(0.3),
+            nn.Dropout(0.5),
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Dropout(0.5),
             nn.Linear(128, 10)
         )
 
@@ -87,13 +95,13 @@ model = FashionCNN().to(device)
 ```{python}
 import torch.optim as optim
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
 ```
 
 
 ```{python}
 # TODO: run it with a larger number and just let it do the necessary work.
-num_epochs = 4
+num_epochs = 10
 
 for epoch in range(num_epochs):
     model.train()

@@ -1,0 +1,141 @@
+---
+title: "Fashion-MNIST"
+format:
+  html:
+    code-fold: true
+jupyter: python3
+---
+
+TODO: Finish this notebook, and then START (just pick) the next shit to work on.
+
+```{python}
+import torch
+from torchvision import datasets, transforms
+from typing import Sized, cast
+
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    # TODO: Not sure if this normalization makes any sense.
+    transforms.Normalize((0.5,), (0.5,))
+])
+
+train_data = datasets.FashionMNIST(
+    root="./data/ignored",
+    train=True,
+    download=True,
+    transform=transform
+)
+
+test_data = datasets.FashionMNIST(
+    root="./data/ignored",
+    train=False,
+    download=True,
+    transform=transform
+)
+
+train_loader = torch.utils.data.DataLoader(
+    train_data, batch_size=64, shuffle=True)
+test_loader = torch.utils.data.DataLoader(test_data, batch_size=64)
+```
+
+```{python}
+import matplotlib.pyplot as plt
+for i in range(3):
+    img, label = train_data[i]
+    plt.imshow(img.squeeze(), cmap="gray")
+    plt.title(f"Label: {label}")
+```
+
+```{python}
+import torch.nn as nn
+
+# TODO: Study, audit, and analyze what I (well, ChatGPT) did here.
+
+
+class FashionCNN(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.features = nn.Sequential(
+            nn.Conv2d(1, 32, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2),
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.ReLU(),
+            nn.MaxPool2d(2)
+        )
+
+        self.classifier = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(128 * 7 * 7, 128),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(128, 10)
+        )
+
+    def forward(self, x):
+        x = self.features(x)
+        return self.classifier(x)
+```
+
+```{python}
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+model = FashionCNN().to(device)
+```
+
+```{python}
+import torch.optim as optim
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+```
+
+
+```{python}
+# TODO: run it with a larger number and just let it do the necessary work.
+num_epochs = 4
+
+for epoch in range(num_epochs):
+    model.train()
+    running_loss = 0.0
+
+    for images, labels in train_loader:
+        images, labels = images.to(device), labels.to(device)
+
+        optimizer.zero_grad()
+        outputs = model(images)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+
+        running_loss += loss.item() * images.size(0)
+
+    epoch_loss = running_loss / len(cast(Sized, train_loader.dataset))
+    print(f"Epoch [{epoch + 1}/{num_epochs}], Loss: {epoch_loss:.4f}")
+```
+
+These numbers match (TODO: but remove this comment later).
+
+> Fashion-MNIST is a dataset of Zalando's article images—consisting of a
+> training set of 60,000 examples and a test set of 10,000 examples.
+
+```{python}
+
+print(len(cast(Sized, train_loader.dataset)))
+print(len(cast(Sized, test_loader.dataset)))
+```
+
+```{python}
+model.eval()
+correct = 0
+
+with torch.no_grad():
+    for images, labels in test_loader:
+        images, labels = images.to(device), labels.to(device)
+        outputs = model(images)
+        _, predicted = torch.max(outputs, 1)
+        correct += (predicted == labels).sum().item()
+
+accuracy = 100 * correct / len(cast(Sized, test_loader.dataset))
+print(f"Test Accuracy: {accuracy:.2f}%")
+```

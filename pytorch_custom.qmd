@@ -6,7 +6,9 @@ format:
 jupyter: python3
 ---
 
-Import required libraries
+This notebook demonstrates how to create a custom PyTorch model to fit a parabolic function to noisy synthetic data. It shows the complete workflow from data generation and visualization to model definition, training with gradient descent, and evaluation.
+
+Import required libraries.
 
 ```{python}
 import torch
@@ -14,7 +16,7 @@ import torch.nn as nn
 import matplotlib.pyplot as plt
 ```
 
-Define function to generate noisy parabolic data
+Define function to generate noisy parabolic data.
 
 ```{python}
 def generate_parabola_data(a, b, c, n_points=100, noise_std=500):
@@ -23,7 +25,7 @@ def generate_parabola_data(a, b, c, n_points=100, noise_std=500):
     return x, y
 ```
 
-Set true parameters for the parabola
+Set true parameters for the parabola.
 
 ```{python}
 true_a = -0.6
@@ -31,7 +33,7 @@ true_b = -25
 true_c = 3.5
 ```
 
-Generate data and visualize the noisy dataset
+Generate data and visualize the noisy dataset.
 
 ```{python}
 x, y = generate_parabola_data(true_a, true_b, true_c)
@@ -44,7 +46,7 @@ plt.legend()
 plt.show()
 ```
 
-Define a custom PyTorch model for parabola fitting
+Define a custom PyTorch model for parabola fitting.
 
 ```{python}
 class ParabolaModel(nn.Module):
@@ -58,7 +60,7 @@ class ParabolaModel(nn.Module):
         return self.a * x**2 + self.b * x + self.c
 ```
 
-Train the model using Adam optimizer and MSE loss
+Train the model using Adam optimizer and MSE loss.
 
 ```{python}
 model = ParabolaModel()
@@ -76,7 +78,7 @@ for epoch in range(1000):
         print(f"Epoch {epoch:4d} | Loss = {loss.item():.6f}")
 ```
 
-Compare true parameters with learned parameters
+Compare true parameters with learned parameters.
 
 ```{python}
 print("\nTrue parameters:")
@@ -86,7 +88,7 @@ print("\nLearned parameters:")
 print(f"a = {model.a.item():.4f}, b = {model.b.item():.4f}, c = {model.c.item():.4f}")
 ```
 
-Visualize the fitted parabola against the original data
+Visualize the fitted parabola against the original data.
 
 ```{python}
 with torch.no_grad():

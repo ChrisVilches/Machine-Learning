@@ -6,11 +6,15 @@ format:
 jupyter: python3
 ---
 
+Import required libraries
+
 ```{python}
 import torch
 import torch.nn as nn
 import matplotlib.pyplot as plt
 ```
+
+Define function to generate noisy parabolic data
 
 ```{python}
 def generate_parabola_data(a, b, c, n_points=100, noise_std=500):
@@ -19,11 +23,15 @@ def generate_parabola_data(a, b, c, n_points=100, noise_std=500):
     return x, y
 ```
 
+Set true parameters for the parabola
+
 ```{python}
 true_a = -0.6
 true_b = -25
 true_c = 3.5
 ```
+
+Generate data and visualize the noisy dataset
 
 ```{python}
 x, y = generate_parabola_data(true_a, true_b, true_c)
@@ -36,6 +44,8 @@ plt.legend()
 plt.show()
 ```
 
+Define a custom PyTorch model for parabola fitting
+
 ```{python}
 class ParabolaModel(nn.Module):
     def __init__(self):
@@ -47,6 +57,8 @@ class ParabolaModel(nn.Module):
     def forward(self, x):
         return self.a * x**2 + self.b * x + self.c
 ```
+
+Train the model using Adam optimizer and MSE loss
 
 ```{python}
 model = ParabolaModel()
@@ -64,6 +76,8 @@ for epoch in range(1000):
         print(f"Epoch {epoch:4d} | Loss = {loss.item():.6f}")
 ```
 
+Compare true parameters with learned parameters
+
 ```{python}
 print("\nTrue parameters:")
 print(f"a = {true_a}, b = {true_b}, c = {true_c}")
@@ -71,6 +85,8 @@ print(f"a = {true_a}, b = {true_b}, c = {true_c}")
 print("\nLearned parameters:")
 print(f"a = {model.a.item():.4f}, b = {model.b.item():.4f}, c = {model.c.item():.4f}")
 ```
+
+Visualize the fitted parabola against the original data
 
 ```{python}
 with torch.no_grad():
